@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link rel="stylesheet" href="attendancestatus.css"   />
+</head>
+<title>Attendance Status</title>
+<body>
+
+<div class="top">
+<nav>
+      <a href="index.html"><img src="scllogo.png" alt="Millennial logo"></a>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Subject</a></li>
+        <li><a href="#">Marks</a></li>
+        <li><a href="#">Transport</a></li>
+        <li class="active"><a href="#">Attendance</a></li>
+        <li><a href="#">Assignments</a></li>
+        <li><a href="#">Class</a></li>
+        <li><a href="#">Account</a></li>
+        <li><a href="#">Events</a></li>
+        <li><a href="#">Log Out</a></li>
+      </ul>
+    </nav>
+    <h1>Attendance Status</h1>
+   </div>
+
+<section class="content" ng-show="views.list">
+  <div class="row">
+    <div class="col-md-7">
+      <div class="box box-primary">
+        <div class="box-header">
+            <i class="fa fa-bar-chart-o"></i>
+            <h2 class="box-title">AttendancePerDay</h2>
+        </div>
+        <div class="box-body" style="height: 330px;">
+            <div attendance-per-day id="line-chart" style="width:100%;height: 300px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="box box-primary">
+        <div class="box-header">
+            <i class="fa fa-bar-chart-o"></i>
+            <h3 class="box-title">Attendance Today</h3>
+        </div>
+        <div class="box-body" style="height: 330px;">
+            <div attendance-bar-chart id="bar-chart" style="width:100%; height: 300px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h2 class="box-title">Attendance Filters</h2>
+    </div>
+    
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" ng-submit="statsAttendance()" name="attendance" novalidate>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Class</label>
+          <div class="col-sm-10">
+            <select class="form-control" ng-model="form.classId" name="classId">
+              <option ng-repeat="(key,value) in attendanceStats.classes" value="key">Value</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" ng-show="attendanceStats.attendanceModel == 'subject'">
+          <label for="inputPassword3" class="col-sm-2 control-label">Subject</label>
+          <div class="col-sm-10">
+            <select class="form-control" ng-model="form.subjectId" name="subjectId">
+              <option ng-repeat="(key,value) in attendanceStats.subjects" value="key">value</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': attendance.attendanceDay.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Date</label>
+          <div class="col-sm-10">
+            <input type="text" name="attendanceDay" ng-model="form.attendanceDay" class="form-control datemask" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Status</label>
+          <div class="col-sm-10">
+            <select class="form-control" ng-model="form.status" name="status">
+              <option value="All">All</option>
+              <option value="1">Present</option>
+              <option value="0">Absent</option>
+              <option value="2">Late</option>
+              <option value="3">LateExecuse</option>
+              <option value="4">earlyDismissal</option>
+            </select>
+          </div>
+        </div>
+        <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="attendance.$invalid">Attendance Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.listdata">
+  <div class="box col-xs-12">
+    <div class="box-header">
+      <h3 class="box-title">attendanceStats</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <table align="center" class="table table-bordered">
+          <tbody><tr>
+              <th style="width: 10px">#</th>
+              <th>studentName</th>
+              <th ng-show="attendanceModel='subject'">Subject</th>
+              <th>Attendance</th>
+          </tr>
+          <tr ng-repeat="student in attendanceData | object2Array | orderBy:'studentRollId'">
+              <td>student.studentRollId</td>
+              <td><a href="" ng-click="studentProfile( student.studentId )">student.studentName</a></td>
+              <td ng-show="attendanceModel='subject'">student.studentSubject</td>
+              <td>
+                <div>
+                  <span ng-show="student.status =='0'">Absent</span>
+                  <span ng-show="student.status =='1'">Present</span>
+                  <span ng-show="student.status =='2'">Late</span>
+                  <span ng-show="student.status =='3'">LateExecuse</span>
+                  <span ng-show="student.status =='4'">earlyDismissal</span>
+                </div>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.lists">
+  <div class="box col-xs-12">
+    <div class="box-header">
+      <h2 class="box-title">Attendance Stats</h2>
+    </div>
+    <div class="box-body table-responsive">
+      <table align="center" class="table table-bordered">
+          <tbody><tr>
+              <th>Date</th>
+              <th ng-show="attendanceStats.attendanceModel=='subject'">Subject</th>
+              <th>Attendance</th>
+          </tr>
+          <tr ng-repeat="(key,value) in attendanceStats.studentAttendance">
+              <td>value.date</td>
+              <td ng-show="attendanceStats.attendanceModel=='subject'">value.subject</td>
+              <td>
+                <div>
+                  <span ng-show="value.status =='0'">Absent</span>
+                  <span ng-show="value.status =='1'">Present</span>
+                  <span ng-show="value.status =='2'">Late</span>
+                  <span ng-show="value.status =='3'">LateExecuse</span>
+                  <span ng-show="value.status =='4'">earlyDismissal</span>
+                </div>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.listp">
+  <div ng-repeat="(key, value) in attendanceStats.studentAttendance" class="box col-xs-12">
+    <div class="box-header">
+      <h3 class="box-title">value.n.name</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <table align="center" class="table table-bordered">
+          <tbody><tr>
+              <th>Date</th>
+              <th>Attendance</th>
+          </tr>
+          <tr ng-repeat="(key2,value2) in value.d">
+              <td>value2.date</td>
+              <td>
+                <div>
+                  <span ng-show="value2.status =='0'">Absent</span>
+                  <span ng-show="value2.status =='1'">Present</span>
+                  <span ng-show="value2.status =='2'">Late</span>
+                  <span ng-show="value2.status =='3'">LateExecuse</span>
+                  <span ng-show="value2.status =='4'">earlyDismissal</span>
+                </div>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<modal visible="showModal"><div ng-bind-html="modalContent"></div></modal>
+
+</body>
+</html>

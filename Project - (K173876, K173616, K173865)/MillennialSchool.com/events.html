@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" href="events.css"   />
+</head>
+ <title>Events</title>
+<body>
+<div class="top">
+<nav>
+      <a href="index.html"><img src="scllogo.png" alt="Millennial logo"></a>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Course Registration</a></li>
+        <li><a href="#">Transport</a></li>
+        <li><a href="#">Attendance</a></li>
+        <li class="active"><a href="#">Events</a></li>
+        <li><a href="#">Admin</a></li>
+        <li><a href="#">Fee Details</a></li></li>
+        <li><a href="#">Log Out</a></li>
+      </ul>
+    </nav>
+    <h1>Events</h1>
+   </div>
+
+
+<section class="content" ng-show="views.list"> 
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h2 class="box-title">List Of Events</h2>
+          <div class="box-tools">
+             <div class="input-group">
+                  <input type="text" name="table_search" ng-model="searchText" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search">
+                  <input type="submit" name="submit" class="submit" value="search">
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table align="center" class="table table-hover">
+              <tbody><tr>
+                  <th>ID</th>
+                  <th>Event Name/Place</th>
+                  <th>Event Description</th>
+                  <th>For</th>
+                  <th>Date</th>
+                  <th style="width:100px;" ng-if="userRole == 'admin'">Operations</th>
+              </tr>
+              <tr ng-repeat="event in events | filter:searchText">
+                  <td>event.id</td>
+                  <td>event.eventTitle / event.enentPlace</td>
+                  <td>event.eventDescription</td>
+                  <td>event.eventFor</td>
+                  <td>event.eventDate</td>
+                  <td ng-if="userRole == 'admin'">
+                    <a ng-if="userRole == 'admin'" ng-click="edit(event.id)" type="button" class="btn btn-info btn-flat" title="Edit" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-if="userRole == 'admin'" ng-click="remove(event,$index)" type="button" class="btn btn-danger btn-flat" title="Remove" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+              <tr ng-show="!events.length"><td class="noTableData" colspan="5">noEvents</td></tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h2 class="box-title">Add Event</h2>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="addEvent" role="form" ng-submit="saveAdd()" novalidate>
+        <div class="form-group" ng-class="{'has-error': addEvent.eventTitle.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">Event Title </label>
+          <div class="col-sm-10">
+            <input type="text" name="eventTitle" ng-model="form.eventTitle" class="form-control" required placeholder="eventTitle">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Event Description</label>
+          <div class="col-sm-10">
+            <textarea ck-editor name="eventDescription" class="form-control" ng-model="form.eventDescription" placeholder="eventDescription"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Event Place</label>
+          <div class="col-sm-10">
+            <input type="text" name="enentPlace" ng-model="form.enentPlace" class="form-control" placeholder="eventPlace">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addEvent.eventFor.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">For:</label>
+          <div class="col-sm-10">
+            
+            <div class="radio">
+                <label>
+                    <input type="radio" name="eventFor" value="all" ng-model="form.eventFor" checked="checked" required>
+                    All
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="eventFor" value="student" ng-model="form.eventFor" required>
+                    Students
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="eventFor" value="teacher" ng-model="form.eventFor" required>
+                    Teachers
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="eventFor" value="parent" ng-model="form.eventFor" required>
+                    Parents
+                </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addEvent.eventDate.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Date </label>
+          <div class="col-sm-10">
+            <input type="text" id="datemask" name="eventDate" ng-model="form.eventDate" required class="form-control datemask">
+          </div>
+        </div>
+        <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="addEvent.$invalid">Add</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h2 class="box-title">Edit Event</h2>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="editEvent" role="form" ng-submit="saveEdit()" novalidate>
+        <div class="form-group" ng-class="{'has-error': addEvent.eventTitle.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">Event Title </label>
+          <div class="col-sm-10">
+            <input type="text" name="eventTitle" ng-model="form.eventTitle" class="form-control" required placeholder="Event Title">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Event Description</label>
+          <div class="col-sm-10">
+            <textarea ck-editor name="eventDescription" class="form-control" ng-model="form.eventDescription" placeholder="Event Description"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Event Place</label>
+          <div class="col-sm-10">
+            <input type="text" name="enentPlace" ng-model="form.enentPlace" class="form-control" placeholder="Event Place">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addEvent.eventFor.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">For:</label>
+          <div class="col-sm-10">
+            
+            <div class="radio">
+                <label>
+                    <input type="radio" name="eventFor" value="all" ng-model="form.eventFor" checked="checked" required>
+                    All
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="eventFor" value="student" ng-model="form.eventFor" required>
+                    Students
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="eventFor" value="teacher" ng-model="form.eventFor" required>
+                    Teachers
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="eventFor" value="parent" ng-model="form.eventFor" required>
+                    Parents
+                </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addEvent.eventDate.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Date </label>
+          <div class="col-sm-10">
+            <input type="text" id="datemask" name="eventDate" ng-model="form.eventDate" required class="form-control datemask">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="editEvent.$invalid">Edit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+
+</body>
+</html>

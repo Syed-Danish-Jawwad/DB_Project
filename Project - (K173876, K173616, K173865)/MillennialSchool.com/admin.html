@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" href="admin.css"   />
+</head>
+ <title>Admin</title>
+<body>
+
+ <div class="top">
+<nav>
+      <a href="index.html"><img src="scllogo.png" alt="Millennial logo"></a>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Course Registration</a></li>
+        <li><a href="#">Transport</a></li>
+        <li><a href="#">Attendance</a></li>
+        <li><a href="#">Events</a></li>
+        <li class="active"><a href="#">Admin</a></li>
+        <li><a href="#">Fee Details</a></li></li>
+        <li><a href="#">Log Out</a></li>
+      </ul>
+    </nav>
+    <h1>Admin Panel</h1>
+   </div>
+
+
+<section  class="content" ng-show="views.list">
+  <div class="box col-xs-12">
+
+
+      <div class="box-header">
+          <h2 class="box-title">List Of Administrators</h2>
+      <div class="box-tools">
+              <div class="input-group">
+                  <input type="text" name="table_search" ng-model="searchText" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search">
+                  <input type="submit" name="submit" class="submit" value="search">
+              </div>
+          </div>
+      
+      </div>
+
+      <div class="box-body table-responsive">
+          <table align="center" class="table table-hover">
+              <tbody><tr>
+                  <th>ID</th>
+                  <th>name</th>
+                  <th>username</th>
+                  <th>email</th>
+                  <th>Operations</th>
+              </tr>
+              <tr ng-repeat="admin in admins | filter:searchText">
+                  <td>admin.id</td>
+                  <td>admin.fullName</td>
+                  <td>admin.username</td>
+                  <td>admin.email</td>
+                  <td>
+                    <a ng-click="edit(admin.id)" type="button" class="btn btn-info btn-flat" title="Edit" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-click="remove(admin,$index)" type="button" class="btn btn-danger btn-flat" title="Remove" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+              <tr ng-show="!admins.length"><td class="noTableData" colspan="5">No administrators</td></tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">Add Administrator</h3>
+    </div>
+    <div class="box-body_table-responsive">
+      <form align="center"class="form-horizontal" name="addAdmin" role="form" ng-submit="saveAdd()" novalidate>
+        <div class="form-group" ng-class="{'has-error': addAdmin.fullName.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">Full Name </label>
+          <div class="col-sm-10">
+            <input type="text" name="fullName" ng-model="form.fullName" class="form-control" required placeholder="FullName">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.username.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Username </label>
+          <div class="col-sm-10">
+            <input type="text" name="username" ng-model="form.username" class="form-control" placeholder="username" required>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.email.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Email </label>
+          <div class="col-sm-10">
+            <input type="email" name="email" ng-model="form.email" class="form-control" placeholder="email" required>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.password.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Password </label>
+          <div class="col-sm-10">
+            <input type="password" name="password" ng-model="form.password" class="form-control" placeholder="password" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="addAdmin.$invalid">Add</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+  <div class="boxcol-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">Edit Administrator</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form align="center" class="form-horizontal" name="editDorm" role="form" ng-submit="saveEdit()" novalidate>
+        <div class="form-group" ng-class="{'has-error': editDorm.fullName.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">Full Name </label>
+          <div class="col-sm-10">
+            <input type="text" name="fullName" ng-model="form.fullName" class="form-control" required placeholder="FullName">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.username.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Username </label>
+          <div class="col-sm-10">
+            <input type="text" name="username" ng-model="form.username" class="form-control" placeholder="username" required>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.email.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Email </label>
+          <div class="col-sm-10">
+            <input type="email" name="email" ng-model="form.email" class="form-control" placeholder="email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Password </label>
+          <div class="col-sm-10">
+            <input type="password" name="password" ng-model="form.password" class="form-control" placeholder="password">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="editDorm.$invalid">Edit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

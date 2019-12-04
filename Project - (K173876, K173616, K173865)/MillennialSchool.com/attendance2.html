@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="attendance2.css"   />
+</head>
+  <title>Add Attendance</title>
+
+<body>
+<div class="top">
+<nav>
+      <a href="index.html"><img src="scllogo.png" alt="Millennial logo"></a>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Course</a></li>
+        <li><a href="#">Marks</a></li>
+        <li><a href="#">Transport</a></li>
+        <li class="active"><a href="#">Attendance</a></li>
+        <li><a href="#">Assignments</a></li>
+        <li><a href="#">Class</a></li>
+        <li><a href="#">Account</a></li>
+        <li><a href="#">Events</a></li>
+        <li><a href="#">Log Out</a></li>
+      </ul>
+    </nav>
+    <h1>Attendance</h1>
+   </div>
+    
+
+
+<section class="content" ng-show="views.list">
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">Select Attendance</h3>
+    </div>
+    <div class="box-body_table-responsive">
+      <form align="center"class="form-horizontal" ng-submit="startAttendance()" name="attendance" novalidate>
+        <div class="form-group" ng-class="{'has-error': attendance.classId.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Class </label>
+          <div class="col-sm-10">
+            <select class="form-control" ng-model="form.classId" name="classId" required>
+              <option ng-repeat="class in classes" value="class.id">class.className</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" ng-show="attendanceModel == 'subject'" ng-class="{'has-error': attendance.subjectId.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Subject </label>
+          <div class="col-sm-10">
+            <select class="form-control" ng-model="form.subjectId" name="subjectId" ng-required="attendanceModel == 'subject'">
+              <option ng-repeat="subject in subjects" value="subject.id">subject.subjectTitle</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': attendance.attendanceDay.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Date </label>
+          <div class="col-sm-10">
+            <input type="text" name="attendanceDay" ng-model="form.attendanceDay" class="form-control datemask" required>
+          </div>
+        </div>
+        <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="attendance.$invalid">Control Attendance</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.lists">
+  <div class="box col-xs-12">
+    <div class="box-header">
+      <h3 class="box-title">Control Attendance : class.className, <span ng-show="attendanceModel == 'subject'">Subject: subject.subjectTitle,</span> Date : form.attendanceDay</h3>
+    </div>
+    <div class="box-body_table-responsive">
+      <form align="center" class="form-horizontal" ng-submit="saveAttendance()" name="form" novalidate>
+        <table align="center" class="table table-bordered">
+            <tbody><tr>
+                <th style="width: 10px">Student ID</th>
+                <th>Student Name</th>
+                <th>Attendance</th>
+            </tr>
+            <tr ng-repeat="student in students | object2Array | orderBy:'studentRollId'">
+                <td>student.studentRollId</td>
+                <td>student.name</td>
+                <td>
+                  <div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-model="student.attendance" value="1"> Present
+                        </label>
+                        <label>
+                            <input type="radio" ng-model="student.attendance" value="0"> Absent
+                        </label>
+                        <label>
+                            <input type="radio" ng-model="student.attendance" value="2"> Late
+                        </label>
+                        <label>
+                            <input type="radio" ng-model="student.attendance" value="3"> Leave
+                        </label>
+                        <label>
+                            <input type="radio" ng-model="student.attendance" value="4"> NotRegistered
+                        </label>
+                    </div>
+                  </div>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+        <br/>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Save Attendance</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+body{
+  display: inline;
+  margin: 0;
+  background-color: #F5F4F9;
+}
+
+h2{
+	margin: 0;
+}
+
+section{
+	font-family: sans-serif;
+	font-style: all;
+}
+
+.top{
+	margin:0;
+	background: url(background.jpg)
+	no-repeat center center;
+	min-height: 280px;
+	min-width: 100px;
+}
+
+.top h1{
+	text-align: center;
+	color: white;
+	font-size: 90px;
+}
+
+img{
+	float:top right;
+	height: 90px;
+	width: 90px;
+}
+
+nav{
+	width: 100%;
+	height: 75px;
+	background-color: #0005;
+	line-height: 80px;
+}
+
+nav ul{
+	float: right;
+	margin: 0;
+	margin-right: 7px;
+}
+
+nav ul li{
+
+	display: inline-block;
+}
+
+nav ul li a{
+	text-decoration: none;
+	color: #fff;
+	padding: 20px;
+}
+
+nav ul li:hover a{
+	background-color: coral;
+	color: black;
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+nav ul li.active a{
+	background-color: coral;
+	color: #000;
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+.box-header{
+	text-align: center;
+	background: orangered;
+	padding: auto;
+	color: #fff;
+	max-height: 30px;
+}
+
+div.form-group{
+	display: block;
+	padding: 5px;
+	text-align: auto;
+	margin-left: 10px;
+}
+
+.form-group input[type="text"],input[type="email"],input[type="password"]{
+	width:40%;
+}
+
+.form-group button{
+	background-color: #333;
+	color:#fff;
+	padding: 10px 15px;
+	border:none;
+	text-align: center;
+
+}
+
+div .input-group{
+	margin:10px;
+	padding: auto;
+}
+
+table{
+	margin-top: 15px;
+	margin-bottom: 15px;
+	width: auto;
+	text-align: center;
+	background: white;
+
+}
+
+th{
+	background-color: #D5CAD3;
+	padding: 17px;
+	color: black;
+
+}
+
+table,th,td{
+	border:1px solid black;
+	border-collapse: collapse;
+}
+
+
+div .box-tools{
+	float: left;
+	width: 100%;
+}
+
+div .box-tools input{
+	margin-top: 0;
+	float: left;
+	margin-bottom: 10px;
+}
+
+div .box-body_table-responsive{
+	margin:10px;
+}
+
+div .form-group label{
+	width: 40%;
+}

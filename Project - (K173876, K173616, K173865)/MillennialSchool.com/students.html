@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="students.css">
+</head>
+<body>
+<title>Stuent</title>
+<body>
+
+<div class="top">
+<nav>
+      <a href="index.html"><img src="scllogo.png" alt="Millennial logo"></a>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Course Registration</a></li>
+        <li><a href="#">Transport</a></li>
+        <li><a href="#">Attendance</a></li>
+        <li><a href="#">Events</a></li>
+        <li><a href="#">Admin</a></li>
+        <li><a href="#">News</a></li>
+        <li class="active"><a href="#">Student</a></li>
+        <li><a href="#">Fee Details</a></li></li>
+        <li><a href="#">Log Out</a></li>
+      </ul>
+    </nav>
+    <h1>Student</h1>
+   </div>
+<section class="content" ng-show="views.list">
+  
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h2 class="box-title">Students List</h2>
+          <div class="box-tools">
+              <div class="input-group pull-right">
+                  <select class="form-control input-sm pull-right" ng-model="searchText.studentClass" style="width:150px;" >
+                    <option value="">all</option>
+                    <option ng-repeat="class in classes" value="class.className">class.className</option>
+                  </select> 
+                  <input type="text" name="table_search.text" ng-model="searchText.text" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search"> 
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table align="center" class="table table-hover">
+              <tbody><tr>
+                  <th>ID</th>
+                  <th>Full Name</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Class</th>
+                  <th class='no-print'>Operations</th>
+              </tr>
+              <tr dir-paginate="student in students | filter:{studentClass:searchText.studentClass} | filter:searchText.text | itemsPerPage:20" total-items="totalItems">
+                  <td>student.studentRollId</td>
+                  <td><a href="" ng-click="studentProfile( student.id )">student.fullName</a> </td>
+                  <td>student.username</td>
+                  <td>student.email</td>
+                  <td>student.studentClass</td>
+                  <td class='no-print'>
+                    <a ng-click="attendance(student.id)" type="button" class="btn btn-info btn-flat" title="Attendance" tooltip><i class="fa fa-eye"></i></a>
+                    <a ng-click="marksheet(student.id)" type="button" class="btn btn-info btn-flat" title="Marksheet" tooltip><i class="fa fa-table"></i></a>
+                    <a ng-if="userRole == 'admin'" ng-click="leaderBoard(student.id)" type="button" class="btn btn-info btn-flat" title="leaderboard" tooltip><i class="fa fa-trophy"></i></a>
+                    <a ng-if="userRole == 'admin'" ng-click="edit(student.id)" type="button" class="btn btn-info btn-flat" title="Edit" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-if="userRole == 'admin'" ng-click="remove(student,$index)" type="button" class="btn btn-danger btn-flat" title="Remove" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+              <tr ng-show="!students.length"><td class="noTableData" colspan="6">noStudents</td></tr>
+          </tbody></table>
+          <dir-pagination-controls class="pull-right" on-page-change="pageChanged(newPageNumber)" template-url="templates/dirPagination.html" ></dir-pagination-controls>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.marksheet">
+  <div class="box col-xs-12" ng-repeat="exam in studentMarksheet">
+      <div class="box-header">
+          <h2 class="box-title">exam.title</h2>
+      </div>
+      <div class="box-body table-responsive">
+          <table align="center" class="table table-hover">
+              <tbody><tr>
+                  <th>Subject</th>
+                  <th>Mark</th>
+                  <th>Attendance Makrs</th>
+                  <th>Grade</th>
+                  <th>Comments</th>
+              </tr>
+              <tr ng-repeat="dataOne in exam.data">
+                  <td>dataOne.subjectName</td>
+                  <td>dataOne.examMark</td>
+                  <td>dataOne.attendanceMark</td>
+                  <td>dataOne.grade</td>
+                  <td>dataOne.markComments</td>
+              </tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.approval">
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h2 class="box-title">waitingApproval</h2>
+          <div class="box-tools">
+              <div class="input-group pull-right">
+                  <select class="form-control input-sm pull-right" ng-model="searchText.studentClass" style="width:150px;" >
+                    <option value="">all</option>
+                    <option ng-repeat="class in classes" value="class.id">class.className</option>
+                  </select> 
+                  <input type="text" name="table_search" ng-model="searchText" class="form-control input-sm pull-right" style="width: 150px;" placeholder="Search">
+                  <input type="submit" name="submit" class="submit" value="search"> 
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table align="center" class="table table-hover">
+              <tbody><tr>
+                  <th>ID</th>
+                  <th>Full Name</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Class</th>
+                  <th>Operations</th>
+              </tr>
+              <tr ng-repeat="student in studentsApproval | filter:searchText">
+                  <td>student.studentRollId</td>
+                  <td><a href="" ng-click="studentProfile( student.id )">student.fullName</a></td>
+                  <td>student.username</td>
+                  <td>student.email</td>
+                  <td>student.studentClass</td>
+                  <td>
+                    <a ng-click="approve(student.id)" type="button" class="btn btn-success btn-flat" title="Approve" tooltip><i class="fa fa-check-square-o"></i></a>
+                    <a ng-click="edit(student.id)" type="button" class="btn btn-info btn-flat" title="Edit" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-click="remove(student,$index)" type="button" class="btn btn-danger btn-flat" title="Remove" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h2 class="box-title">Add Student</h2>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" ng-upload="saveAdd(content)" method="post" action="students" name="addAdmin" role="form" novalidate>
+        <div class="form-group" ng-class="{'has-error': addAdmin.fullName.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">Full Name </label>
+          <div class="col-sm-10">
+            <input type="text" name="fullName" ng-model="form.fullName" class="form-control" required placeholder="FullName">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputEmail3" class="col-sm-2 control-label">Roll-id </label>
+          <div class="col-sm-10">
+            <input type="text" name="studentRollId" ng-model="form.studentRollId" class="form-control" placeholder="rollid">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.username.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">Username </label>
+          <div class="col-sm-10">
+            <input type="text" name="username" ng-model="form.username" class="form-control" required placeholder="username">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.email.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Email </label>
+          <div class="col-sm-10">
+            <input type="email" name="email" ng-model="form.email" class="form-control" placeholder="email" required>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.password.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Password </label>
+          <div class="col-sm-10">
+            <input type="password" name="password" ng-model="form.password" class="form-control" required placeholder="password">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Gender</label>
+          <div class="col-sm-10">
+            
+            <div class="radio">
+                <label>
+                    <input type="radio" name="gender" value="male" ng-model="form.gender" checked="checked">
+                    Male
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="gender" value="female" ng-model="form.gender">
+                    Female
+                </label>
+            </div>
+
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Birthday</label>
+          <div class="col-sm-10">
+            <input type="text" id="datemask" name="birthday" ng-model="form.birthday" class="form-control datemask">
+          </div>
+        </div>
+        <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Address</label>
+          <div class="col-sm-10">
+            <input type="text" name="address" class="form-control" ng-model="form.address" placeholder="Address">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">PhoneNo</label>
+          <div class="col-sm-10">
+            <input type="text" name="phoneNo" class="form-control" ng-model="form.phoneNo" placeholder="phoneNo">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">MobileNo</label>
+          <div class="col-sm-10">
+            <input type="text" name="mobileNo" class="form-control" ng-model="form.mobileNo" placeholder="mobileNo">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Class</label>
+          <div class="col-sm-10">
+            <select class="form-control" name="studentClass" ng-model="form.studentClass" >
+              <option ng-repeat="class in classes" value="class.id">class.className</option>
+            </select> 
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Transportation</label>
+          <div class="col-sm-10">
+            <select class="form-control" name="transport" ng-model="form.transport" >
+              <option ng-repeat="transport in transports" value="transport.id">transport.transportTitle</option>
+            </select> 
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Photo</label>
+          <div class="col-sm-10">
+            <input type="file" name="photo">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="hidden" name="_token" value="CSRF_TOKEN">
+            <button type="submit" class="btn btn-default" ng-disabled="addAdmin.$invalid || $isUploading">Add</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h2 class="box-title">Edit Student</h2>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="editDorm" role="form" ng-upload="saveEdit(content)" method="post" action="'students/'+form.id" novalidate>
+        <div class="form-group" ng-class="{'has-error': addAdmin.fullName.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">FullName  </label>
+          <div class="col-sm-10">
+            <input type="text" name="fullName" ng-model="form.fullName" class="form-control" required placeholder="FullName">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputEmail3" class="col-sm-2 control-label">Roll-id </label>
+          <div class="col-sm-10">
+            <input type="text" name="studentRollId" ng-model="form.studentRollId" class="form-control" placeholder="rollid">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.username.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">Username </label>
+          <div class="col-sm-10">
+            <input type="text" name="username" ng-model="form.username" class="form-control" required placeholder="username">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.email.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">Email </label>
+          <div class="col-sm-10">
+            <input type="email" name="email" ng-model="form.email" class="form-control" placeholder="email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Password </label>
+          <div class="col-sm-10">
+            <input type="password" name="password" ng-model="form.password" class="form-control" placeholder="password">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Gender</label>
+          <div class="col-sm-10">
+            
+            <div class="radio">
+                <label>
+                    <input type="radio" name="gender" value="male" ng-model="form.gender" checked="checked">
+                    Male
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="gender" value="female" ng-model="form.gender">
+                    Female
+                </label>
+            </div>
+
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Birthday</label>
+          <div class="col-sm-10">
+            <input type="text" id="datemask" name="birthday" ng-model="form.birthday" class="form-control datemask">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Address</label>
+          <div class="col-sm-10">
+            <input type="text" name="address" class="form-control" ng-model="form.address" placeholder="Address">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">PhoneNo</label>
+          <div class="col-sm-10">
+            <input type="text" name="phoneNo" class="form-control" ng-model="form.phoneNo" placeholder="phoneNo">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">MobileNo</label>
+          <div class="col-sm-10">
+            <input type="text" name="mobileNo" class="form-control" ng-model="form.mobileNo" placeholder="mobileNo">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Class</label>
+          <div class="col-sm-10">
+            <select class="form-control" name="studentClass" ng-model="form.studentClass" >
+              <option ng-repeat="class in classes" value="class.id">class.className</option>
+            </select> 
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Transportation</label>
+          <div class="col-sm-10">
+            <select class="form-control" name="transport" ng-model="form.transport" >
+              <option ng-repeat="transport in transports" value="transport.id">transport.transportTitle</option>
+            </select> 
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Photo</label>
+          <div class="col-sm-10">
+            <input type="file" name="photo">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="hidden" name="_token" value="CSRF_TOKEN">
+            <button type="submit" class="btn btn-default" ng-disabled="editDorm.$invalid || $isUploading">Edit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.attendance">
+
+  <div class="box col-xs-12">
+    <div class="box-header">
+      <h2 class="box-title">Attendance Stats</h2>
+    </div>
+    <div class="box-body table-responsive">
+      <table align="center" class="table table-bordered">
+          <tbody><tr>
+              <th>Date</th>
+              <th ng-show="studentAttendance.attendanceModel=='subject'">Subject</th>
+              <th>Attendance</th>
+          </tr>
+          <tr ng-repeat="(key,value) in studentAttendance.attendance">
+              <td>value.date</td>
+              <td ng-show="studentAttendance.attendanceModel=='subject'">studentAttendance.subjects[value.subjectId]</td>
+              <td>
+                <div>
+                  <span ng-show="value.status =='0'">Absent</span>
+                  <span ng-show="value.status =='1'">Present</span>
+                  <span ng-show="value.status =='2'">Late</span>
+                  <span ng-show="value.status =='3'">LateExecuse</span>
+                  <span ng-show="value.status =='4'">earlyDismissal</span>
+                </div>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.import">
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">Import importType</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" ng-upload="saveImported(content)" method="post" action="'students/import/'+importType" name="importData" role="form" novalidate>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">File To Import</label>
+          <div class="col-sm-10">
+            <input type="file" name="excelcsv">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="hidden" name="_token" value="CSRF_TOKEN">
+            <button type="submit" class="btn btn-default" ng-disabled="importData.$invalid || $isUploading">Import</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<modal visible="showModal"><div ng-bind-html="modalContent"></div></modal>
+
+</body>
+</html>
